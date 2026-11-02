@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EntityCatalog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261019202120_InitialCreate")]
+    [Migration("20261019210355_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -41,7 +41,7 @@ namespace EntityCatalog.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique()
-                        .HasDatabaseName("IX_Groups_Name");
+                        .HasDatabaseName("IX_Categories_Name");
 
                     b.ToTable("Categories");
                 });
@@ -87,7 +87,7 @@ namespace EntityCatalog.Migrations
 
                     b.HasIndex("ExternalKey")
                         .IsUnique()
-                        .HasDatabaseName("IX_Entities_ExternalKey");
+                        .HasDatabaseName("IX_Products_ExternalKey");
 
                     b.ToTable("Products");
                 });

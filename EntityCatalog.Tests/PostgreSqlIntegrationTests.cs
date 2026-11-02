@@ -68,7 +68,7 @@ public sealed class PostgreSqlIntegrationTests
 
         var id = Guid.NewGuid();
         await db.Database.ExecuteSqlInterpolatedAsync($"""
-            INSERT INTO "Entities" ("Id", "ExternalKey", "Name", "Description", "CreatedAt", "UpdatedAt")
+            INSERT INTO "Products" ("Id", "ExternalKey", "Name", "Description", "CreatedAt", "UpdatedAt")
             VALUES ({id}, {"existing-legacy-product"}, {"Legacy product"}, {null}, {DateTime.UtcNow}, {DateTime.UtcNow})
             """);
 
@@ -91,12 +91,14 @@ public sealed class PostgreSqlIntegrationTests
 
         var badLogin = await client.PostAsJsonAsync("/api/auth/login", new
         {
-            userName = "editor-integration", password = "Incorrect-Password1!"
+            userName = "editor-integration",
+            password = "Incorrect-Password1!"
         });
         Assert.Equal(HttpStatusCode.Unauthorized, badLogin.StatusCode);
         var login = await client.PostAsJsonAsync("/api/auth/login", new
         {
-            userName = "editor-integration", password = "Editor-Password123!"
+            userName = "editor-integration",
+            password = "Editor-Password123!"
         });
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         var token = (await login.Content.ReadFromJsonAsync<LoginResponseDto>())!.AccessToken;
@@ -112,8 +114,12 @@ public sealed class PostgreSqlIntegrationTests
 
         var productResponse = await editor.PostAsJsonAsync("/api/products", new
         {
-            externalKey = "pg-integration-product", name = "Private item", description = (string?)null,
-            price = 10m, categoryIds = new[] { category.Id }, tagIds = new[] { tag.Id },
+            externalKey = "pg-integration-product",
+            name = "Private item",
+            description = (string?)null,
+            price = 10m,
+            categoryIds = new[] { category.Id },
+            tagIds = new[] { tag.Id },
             images = Array.Empty<object>()
         });
         Assert.Equal(HttpStatusCode.OK, productResponse.StatusCode);
@@ -129,7 +135,8 @@ public sealed class PostgreSqlIntegrationTests
         using var member = app.CreateClient();
         var memberLogin = await client.PostAsJsonAsync("/api/auth/login", new
         {
-            userName = "member-integration", password = "Member-Password123!"
+            userName = "member-integration",
+            password = "Member-Password123!"
         });
         member.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
             "Bearer", (await memberLogin.Content.ReadFromJsonAsync<LoginResponseDto>())!.AccessToken);
@@ -147,8 +154,13 @@ public sealed class PostgreSqlIntegrationTests
         Assert.Equal(HttpStatusCode.Conflict,
             (await editor.PostAsJsonAsync("/api/products", new
             {
-                externalKey = "pg-integration-product", name = "Duplicate", description = (string?)null,
-                price = 1m, categoryIds = new[] { category.Id }, tagIds = Array.Empty<Guid>(), images = Array.Empty<object>()
+                externalKey = "pg-integration-product",
+                name = "Duplicate",
+                description = (string?)null,
+                price = 1m,
+                categoryIds = new[] { category.Id },
+                tagIds = Array.Empty<Guid>(),
+                images = Array.Empty<object>()
             })).StatusCode);
 
         await using var directDb = pg.CreateDbContext();

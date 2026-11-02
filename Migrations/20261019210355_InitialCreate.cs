@@ -309,7 +309,7 @@ namespace EntityCatalog.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Groups_Name",
+                name: "IX_Categories_Name",
                 table: "Categories",
                 column: "Name",
                 unique: true);
@@ -325,7 +325,7 @@ namespace EntityCatalog.Migrations
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Entities_ExternalKey",
+                name: "IX_Products_ExternalKey",
                 table: "Products",
                 column: "ExternalKey",
                 unique: true);

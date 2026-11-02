@@ -20,37 +20,37 @@ public class ProductService
         DateTime? createdToUtc,
         bool includeUnpublished = false)
     {
-        var entitiesQuery = _context.Products
+        var productsQuery = _context.Products
             .AsNoTracking()
             .AsQueryable();
 
         if (!includeUnpublished)
-            entitiesQuery = entitiesQuery.Where(product => product.IsPublished);
+            productsQuery = productsQuery.Where(product => product.IsPublished);
 
-        entitiesQuery = ApplyFilters(
-            entitiesQuery, query, createdFromUtc, createdToUtc);
-        entitiesQuery = ApplySorting(entitiesQuery, query);
+        productsQuery = ApplyFilters(
+            productsQuery, query, createdFromUtc, createdToUtc);
+        productsQuery = ApplySorting(productsQuery, query);
 
-        var entities = await entitiesQuery
+        var products = await productsQuery
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToListAsync();
 
-        var entityIds = entities.Select(e => e.Id).ToList();
+        var productIds = products.Select(e => e.Id).ToList();
 
         var groups = await _context.ProductCategories
-            .Where(x => entityIds.Contains(x.ProductId))
+            .Where(x => productIds.Contains(x.ProductId))
             .Select(x => new { x.ProductId, x.CategoryId })
             .ToListAsync();
 
         var tags = await _context.ProductTags
-            .Where(x => entityIds.Contains(x.ProductId))
+            .Where(x => productIds.Contains(x.ProductId))
             .Select(x => new { x.ProductId, x.TagId })
             .ToListAsync();
 
         var images = await _context.ProductImages
             .AsNoTracking()
-            .Where(x => entityIds.Contains(x.ProductId))
+            .Where(x => productIds.Contains(x.ProductId))
             .OrderBy(x => x.DisplayOrder)
             .ThenBy(x => x.Id)
             .ToListAsync();
@@ -71,7 +71,7 @@ public class ProductService
             .GroupBy(x => x.ProductId)
             .ToDictionary(g => g.Key, g => g.ToList());
 
-        var result = entities.Select(entity => new GetProductDto
+        var result = products.Select(entity => new GetProductDto
         {
             Id = entity.Id,
             ExternalKey = entity.ExternalKey,
@@ -247,7 +247,7 @@ public class ProductService
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (
-            PostgresUniqueConstraint.IsViolation(ex, "IX_Entities_ExternalKey"))
+            PostgresUniqueConstraint.IsViolation(ex, "IX_Products_ExternalKey"))
         {
             throw new InvalidOperationException(
                 "Product with this ExternalKey already exists.", ex);
@@ -330,7 +330,7 @@ public class ProductService
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (
-            PostgresUniqueConstraint.IsViolation(ex, "IX_Entities_ExternalKey"))
+            PostgresUniqueConstraint.IsViolation(ex, "IX_Products_ExternalKey"))
         {
             throw new InvalidOperationException(
                 "Product with this ExternalKey already exists.", ex);

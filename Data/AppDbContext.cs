@@ -26,14 +26,6 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasPostgresExtension("citext");
 
-        // modelBuilder.Entity<Product>().ToTable("Products", table =>
-        //     table.HasCheckConstraint("CK_Entities_Price_NonNegative", "\"Price\" >= 0"));
-        // modelBuilder.Entity<Category>().ToTable("Categories");
-        // modelBuilder.Entity<ProductCategory>().ToTable("ProductCategories");
-        // modelBuilder.Entity<ProductTag>().ToTable("ProductTags");
-        // modelBuilder.Entity<ProductImage>().ToTable("ProductImages", table =>
-        //     table.HasCheckConstraint("CK_ProductImages_DisplayOrder_NonNegative", "\"DisplayOrder\" >= 0"));
-
         modelBuilder.Entity<Product>()
             .Property(e => e.ExternalKey)
             .HasMaxLength(64)
@@ -61,7 +53,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
 
         modelBuilder.Entity<Product>()
             .HasIndex(e => e.ExternalKey)
-            .HasDatabaseName("IX_Entities_ExternalKey")
+            .HasDatabaseName("IX_Products_ExternalKey")
             .IsUnique();
 
         modelBuilder.Entity<Category>()
@@ -72,7 +64,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
 
         modelBuilder.Entity<Category>()
             .HasIndex(g => g.Name)
-            .HasDatabaseName("IX_Groups_Name")
+            .HasDatabaseName("IX_Categories_Name")
             .IsUnique();
 
         modelBuilder.Entity<Tag>()

@@ -97,7 +97,7 @@ public class TagService
             return ReferenceDeleteResult.Deleted;
         }
         catch (DbUpdateException ex) when (
-            PostgresForeignKeyViolation.IsViolation(ex, "FK_EntityTags_Tags_TagId"))
+            PostgresForeignKeyViolation.IsViolation(ex, "FK_ProductTags_Tags_TagId"))
         {
             return ReferenceDeleteResult.InUse;
         }

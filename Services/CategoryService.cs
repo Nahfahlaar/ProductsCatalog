@@ -46,7 +46,7 @@ public class CategoryService
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (
-            PostgresUniqueConstraint.IsViolation(ex, "IX_Groups_Name"))
+            PostgresUniqueConstraint.IsViolation(ex, "IX_Categories_Name"))
         {
             throw new InvalidOperationException(
                 "Category with this name already exists.", ex);
@@ -72,7 +72,7 @@ public class CategoryService
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateException ex) when (
-            PostgresUniqueConstraint.IsViolation(ex, "IX_Groups_Name"))
+            PostgresUniqueConstraint.IsViolation(ex, "IX_Categories_Name"))
         {
             throw new InvalidOperationException(
                 "Category with this name already exists.", ex);
@@ -97,7 +97,7 @@ public class CategoryService
             return ReferenceDeleteResult.Deleted;
         }
         catch (DbUpdateException ex) when (
-            PostgresForeignKeyViolation.IsViolation(ex, "FK_EntityGroups_Groups_GroupId"))
+            PostgresForeignKeyViolation.IsViolation(ex, "FK_ProductCategories_Categories_CategoryId"))
         {
             return ReferenceDeleteResult.InUse;
         }
